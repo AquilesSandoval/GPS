@@ -186,12 +186,19 @@ async function provideDiagnostics() {
   if (!hasCredentials) {
     console.log('\n❌ PROBLEMA: Credenciales no configuradas');
     console.log('\n📝 SOLUCIÓN:');
-    console.log('1. Ve a https://supabase.com/dashboard/project/bqgfyxasmyrkiqucospz');
+    
+    // Extract project ID from URL if available
+    const projectId = config.supabase.url?.match(/https:\/\/([^.]+)\.supabase\.co/)?.[1];
+    const dashboardUrl = projectId 
+      ? `https://supabase.com/dashboard/project/${projectId}`
+      : 'https://supabase.com/dashboard';
+    
+    console.log(`1. Ve a ${dashboardUrl}`);
     console.log('2. Ve a Settings > API');
     console.log('3. Copia el "Project URL" y el "anon public" key');
     console.log('4. Edita backend/.env y configura:');
-    console.log('   SUPABASE_URL=tu-url-aqui');
-    console.log('   SUPABASE_ANON_KEY=tu-clave-aqui');
+    console.log('   SUPABASE_URL=<tu-url-aqui>');
+    console.log('   SUPABASE_ANON_KEY=<tu-clave-aqui>');
     console.log('5. Guarda el archivo y vuelve a ejecutar este script\n');
     return;
   }

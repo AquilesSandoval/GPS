@@ -144,6 +144,12 @@ async function createUser(userData) {
 }
 
 async function createProject(projectData, studentId) {
+  // Validate studentId
+  if (!studentId) {
+    console.log('  ⚠️  No hay estudiante disponible para asignar proyecto, saltando...');
+    return null;
+  }
+  
   // Check if projects table exists
   const { error: tableError } = await supabase
     .from('projects')

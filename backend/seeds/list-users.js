@@ -97,9 +97,11 @@ async function listUsers() {
     
     console.log('📈 Estadísticas:');
     console.log(`   • Total de usuarios: ${users.length}`);
-    console.log(`   • Usuarios activos: ${activeUsers} (${Math.round(activeUsers/users.length*100)}%)`);
-    console.log(`   • Emails verificados: ${verifiedUsers} (${Math.round(verifiedUsers/users.length*100)}%)`);
-    console.log(`   • Han iniciado sesión: ${usersWithLogin} (${Math.round(usersWithLogin/users.length*100)}%)`);
+    
+    const calcPercentage = (count, total) => total > 0 ? Math.round(count/total*100) : 0;
+    console.log(`   • Usuarios activos: ${activeUsers} (${calcPercentage(activeUsers, users.length)}%)`);
+    console.log(`   • Emails verificados: ${verifiedUsers} (${calcPercentage(verifiedUsers, users.length)}%)`);
+    console.log(`   • Han iniciado sesión: ${usersWithLogin} (${calcPercentage(usersWithLogin, users.length)}%)`);
     console.log('');
     
     // Display test credentials if they exist
