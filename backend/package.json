@@ -8,6 +8,8 @@
     "dev": "nodemon src/index.js",
     "migrate": "node migrations/run.js",
     "migrate:rollback": "node migrations/rollback.js",
+    "migrate:supabase": "node migrations/run-supabase.js",
+    "setup:supabase": "node setup-supabase.js",
     "seed": "node seeds/run.js",
     "test": "jest --coverage",
     "lint": "eslint src/"
