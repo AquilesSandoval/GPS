@@ -470,7 +470,6 @@ const exportToExcel = async (req, res, next) => {
     ];
 
     // Style header row
-    worksheet.getRow(1).font = { bold: true };
     worksheet.getRow(1).fill = {
       type: 'pattern',
       pattern: 'solid',

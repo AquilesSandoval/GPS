@@ -6,12 +6,14 @@ import {
   FunnelIcon,
   FolderIcon,
   ArrowDownTrayIcon,
+  ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 
 const SearchPage = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState('');
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState({
     statusId: '',
@@ -64,6 +66,7 @@ const SearchPage = () => {
 
   const handleExport = async () => {
     setExporting(true);
+    setExportError('');
     try {
       const params = {};
       if (query) params.query = query;
@@ -92,7 +95,7 @@ const SearchPage = () => {
       document.body.removeChild(link);
     } catch (error) {
       console.error('Error exporting:', error);
-      alert('Error al exportar a Excel. Por favor intente nuevamente.');
+      setExportError('Error al exportar a Excel. Por favor intente nuevamente.');
     } finally {
       setExporting(false);
     }
@@ -270,6 +273,12 @@ const SearchPage = () => {
               {exporting ? 'Exportando...' : 'Exportar a Excel'}
             </button>
           </div>
+          {exportError && (
+            <div className="mb-4 bg-red-50 border border-red-200 rounded-md p-4 flex items-start gap-3">
+              <ExclamationCircleIcon className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-700">{exportError}</p>
+            </div>
+          )}
           <div className="grid gap-4">
             {results.map((project) => (
               <Link
