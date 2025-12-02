@@ -1,5 +1,6 @@
 const Project = require('../models/Project');
 const NotificationService = require('../services/notificationService');
+const ExcelJS = require('exceljs');
 
 /**
  * Create new project (RF02)
@@ -430,6 +431,116 @@ const checkProjectAccess = async (user, project) => {
   return false;
 };
 
+/**
+ * Export projects to Excel
+ */
+const exportToExcel = async (req, res, next) => {
+  try {
+    const { query, statusId, typeId, authorId, reviewerId, fromDate, toDate } = req.query;
+
+    const filters = {
+      query,
+      statusId: statusId ? parseInt(statusId, 10) : null,
+      typeId: typeId ? parseInt(typeId, 10) : null,
+      authorId: authorId ? parseInt(authorId, 10) : null,
+      reviewerId: reviewerId ? parseInt(reviewerId, 10) : null,
+      fromDate,
+      toDate,
+      limit: null, // No limit for export
+      offset: 0,
+    };
+
+    const projects = await Project.search(filters);
+
+    // Create workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Proyectos');
+
+    // Define columns
+    worksheet.columns = [
+      { header: 'Título', key: 'title', width: 50 },
+      { header: 'Tipo', key: 'type', width: 20 },
+      { header: 'Estado', key: 'status', width: 20 },
+      { header: 'Autores', key: 'authors', width: 40 },
+      { header: 'Palabras Clave', key: 'keywords', width: 30 },
+      { header: 'Resumen', key: 'abstract', width: 60 },
+      { header: 'Fecha de Creación', key: 'created_at', width: 20 },
+      { header: 'Fecha de Envío', key: 'submitted_at', width: 20 },
+      { header: 'Fecha de Aprobación', key: 'approved_at', width: 20 },
+    ];
+
+    // Style header row
+    worksheet.getRow(1).font = { bold: true };
+    worksheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FF4F46E5' },
+    };
+    worksheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+
+    // Helper function to format status
+    const getStatusLabel = (status) => {
+      const labels = {
+        borrador: 'Borrador',
+        postulado: 'Postulado',
+        en_revision: 'En Revisión',
+        requiere_cambios: 'Requiere Cambios',
+        aprobado: 'Aprobado',
+        rechazado: 'Rechazado',
+        archivado: 'Archivado',
+      };
+      return labels[status] || status;
+    };
+
+    // Helper function to format type
+    const getTypeLabel = (type) => {
+      const labels = {
+        tesis: 'Tesis',
+        tesina: 'Tesina',
+        proyecto_investigacion: 'Proyecto de Investigación',
+        memoria_profesional: 'Memoria Profesional',
+        informe_practicas: 'Informe de Prácticas',
+      };
+      return labels[type] || type;
+    };
+
+    // Add data rows
+    projects.forEach((project) => {
+      const authorsNames = project.authors
+        .map(a => `${a.first_name} ${a.last_name}`)
+        .join(', ');
+
+      worksheet.addRow({
+        title: project.title,
+        type: getTypeLabel(project.type_name),
+        status: getStatusLabel(project.status_name),
+        authors: authorsNames,
+        keywords: project.keywords || '',
+        abstract: project.abstract || '',
+        created_at: project.created_at ? new Date(project.created_at).toLocaleDateString('es-MX') : '',
+        submitted_at: project.submitted_at ? new Date(project.submitted_at).toLocaleDateString('es-MX') : '',
+        approved_at: project.approved_at ? new Date(project.approved_at).toLocaleDateString('es-MX') : '',
+      });
+    });
+
+    // Set response headers
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=proyectos_${new Date().toISOString().split('T')[0]}.xlsx`,
+    );
+
+    // Write to response
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createProject,
   getProject,
@@ -444,4 +555,5 @@ module.exports = {
   getProjectStatuses,
   addAuthor,
   removeAuthor,
+  exportToExcel,
 };
