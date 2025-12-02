@@ -1,0 +1,42 @@
+{
+  "name": "sgpti-backend",
+  "version": "1.0.0",
+  "description": "Sistema de Gestión de Proyectos de Titulación e Investigación",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "migrate": "node migrations/run.js",
+    "migrate:rollback": "node migrations/rollback.js",
+    "seed": "node seeds/run.js",
+    "test": "jest --coverage",
+    "lint": "eslint src/"
+  },
+  "keywords": [
+    "sgpti",
+    "thesis",
+    "research",
+    "project-management"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.2.1",
+    "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.2",
+    "mysql2": "^3.6.5",
+    "nodemailer": "^7.0.11",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.55.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2",
+    "supertest": "^6.3.3"
+  }
+}
