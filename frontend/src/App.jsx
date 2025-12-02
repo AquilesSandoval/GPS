@@ -16,6 +16,7 @@ import DashboardPage from './pages/dashboard/DashboardPage';
 import ProjectListPage from './pages/projects/ProjectListPage';
 import ProjectDetailPage from './pages/projects/ProjectDetailPage';
 import NewProjectPage from './pages/projects/NewProjectPage';
+import EditProjectPage from './pages/projects/EditProjectPage';
 
 // Other Pages
 import NotificationsPage from './pages/notifications/NotificationsPage';
@@ -39,6 +40,7 @@ function App() {
             <Route path="/projects" element={<ProjectListPage />} />
             <Route path="/projects/new" element={<NewProjectPage />} />
             <Route path="/projects/:uuid" element={<ProjectDetailPage />} />
+            <Route path="/projects/:uuid/edit" element={<EditProjectPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/profile" element={<ProfilePage />} />
