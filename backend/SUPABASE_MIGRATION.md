@@ -15,8 +15,8 @@ npm install @supabase/supabase-js
 El archivo `.env.example` y `.env` fueron actualizados para incluir:
 
 ```env
-SUPABASE_URL=https://bqgfyxasmyrkiqucospz.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJxZ2Z5eGFzbXlya2lxdWNvc3B6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3MDA3OTYsImV4cCI6MjA4MDI3Njc5Nn0.mn4ljnZWIHH-XtxtC9BkolM-Z6CHr9J7snvMOWqxgXI
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_ANON_KEY=your-supabase-anon-key-here
 ```
 
 ### 3. Configuración del Cliente Supabase
@@ -26,8 +26,8 @@ SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 Se agregó la configuración de Supabase:
 ```javascript
 supabase: {
-  url: process.env.SUPABASE_URL || 'https://bqgfyxasmyrkiqucospz.supabase.co',
-  anonKey: process.env.SUPABASE_ANON_KEY || '<anon-key>',
+  url: process.env.SUPABASE_URL,
+  anonKey: process.env.SUPABASE_ANON_KEY,
 }
 ```
 
@@ -100,12 +100,12 @@ Los siguientes archivos necesitan ser actualizados para usar el cliente Supabase
 
 ## Conexión a la Base de Datos
 
-La aplicación ahora se conecta automáticamente a Supabase usando la URL y el Anon Key proporcionados.
+La aplicación ahora se conecta automáticamente a Supabase usando la URL y el Anon Key proporcionados en las variables de entorno.
 
-### Información de Conexión
-- **URL**: https://bqgfyxasmyrkiqucospz.supabase.co
-- **Project Ref**: bqgfyxasmyrkiqucospz
-- **Role**: anon (clave pública)
+### Configuración de Conexión
+- **SUPABASE_URL**: URL de tu proyecto Supabase (https://your-project-ref.supabase.co)
+- **SUPABASE_ANON_KEY**: Clave anónima pública de tu proyecto
+- **Role**: anon (clave pública para acceso desde el cliente)
 
 ## Recursos
 

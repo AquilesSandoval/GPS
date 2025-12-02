@@ -27,8 +27,8 @@ module.exports = {
   
   // Supabase configuration
   supabase: {
-    url: process.env.SUPABASE_URL || 'https://bqgfyxasmyrkiqucospz.supabase.co',
-    anonKey: process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJxZ2Z5eGFzbXlya2lxdWNvc3B6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3MDA3OTYsImV4cCI6MjA4MDI3Njc5Nn0.mn4ljnZWIHH-XtxtC9BkolM-Z6CHr9J7snvMOWqxgXI',
+    url: process.env.SUPABASE_URL,
+    anonKey: process.env.SUPABASE_ANON_KEY,
   },
 
   // Database configuration (Legacy MySQL - Deprecated)

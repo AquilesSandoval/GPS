@@ -32,20 +32,17 @@ module.exports = {
   
   // Helper method to execute queries (compatibility layer for legacy MySQL code)
   query: async (_sql, _params) => {
-    console.warn('⚠️ Direct SQL queries are not supported with Supabase. Use supabase client methods instead.');
     throw new Error('Direct SQL queries are not supported with Supabase. Use supabase client methods instead.');
   },
   
   // Helper method for transactions (compatibility layer for legacy MySQL code)
   transaction: async (_callback) => {
-    console.warn('⚠️ Transactions need to be implemented using Supabase RPC functions or client methods.');
     throw new Error('Transactions need to be implemented using Supabase RPC functions or client methods.');
   },
   
   // Legacy pool export for backward compatibility (will be deprecated)
   pool: {
     execute: async (_sql, _params) => {
-      console.warn('⚠️ Direct SQL queries are not supported with Supabase. Use supabase client methods instead.');
       throw new Error('Direct SQL queries are not supported with Supabase. Use supabase client methods instead.');
     },
   },
