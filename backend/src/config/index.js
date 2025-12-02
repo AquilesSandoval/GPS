@@ -25,7 +25,13 @@ module.exports = {
   port: process.env.PORT || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
   
-  // Database configuration
+  // Supabase configuration
+  supabase: {
+    url: process.env.SUPABASE_URL || 'https://bqgfyxasmyrkiqucospz.supabase.co',
+    anonKey: process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJxZ2Z5eGFzbXlya2lxdWNvc3B6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3MDA3OTYsImV4cCI6MjA4MDI3Njc5Nn0.mn4ljnZWIHH-XtxtC9BkolM-Z6CHr9J7snvMOWqxgXI',
+  },
+
+  // Database configuration (Legacy MySQL - Deprecated)
   database: {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT, 10) || 3306,

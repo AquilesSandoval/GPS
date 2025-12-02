@@ -1,55 +1,52 @@
-const mysql = require('mysql2/promise');
+const { createClient } = require('@supabase/supabase-js');
 const config = require('./index');
 
-// Create connection pool
-const pool = mysql.createPool({
-  host: config.database.host,
-  port: config.database.port,
-  user: config.database.user,
-  password: config.database.password,
-  database: config.database.name,
-  connectionLimit: config.database.connectionLimit,
-  waitForConnections: true,
-  queueLimit: 0,
-});
+// Create Supabase client
+const supabase = createClient(
+  config.supabase.url,
+  config.supabase.anonKey
+);
 
 // Test database connection
 const testConnection = async () => {
   try {
-    const connection = await pool.getConnection();
-    console.log('✅ Database connected successfully');
-    connection.release();
+    // Test connection by trying to query a simple table or using a health check
+    const { data, error } = await supabase.from('users').select('count', { count: 'exact', head: true });
+    
+    if (error) {
+      console.error('❌ Supabase connection failed:', error.message);
+      return false;
+    }
+    
+    console.log('✅ Supabase connected successfully');
     return true;
   } catch (error) {
-    console.error('❌ Database connection failed:', error.message);
+    console.error('❌ Supabase connection failed:', error.message);
     return false;
   }
 };
 
 module.exports = {
-  pool,
+  supabase,
   testConnection,
   
-  // Helper method to execute queries
+  // Helper method to execute queries (compatibility layer for legacy MySQL code)
   query: async (sql, params) => {
-    const [results] = await pool.execute(sql, params);
-    return results;
+    console.warn('⚠️ Direct SQL queries are not supported with Supabase. Use supabase client methods instead.');
+    throw new Error('Direct SQL queries are not supported with Supabase. Use supabase client methods instead.');
   },
   
-  // Helper method for transactions
+  // Helper method for transactions (compatibility layer for legacy MySQL code)
   transaction: async (callback) => {
-    const connection = await pool.getConnection();
-    await connection.beginTransaction();
-    
-    try {
-      const result = await callback(connection);
-      await connection.commit();
-      return result;
-    } catch (error) {
-      await connection.rollback();
-      throw error;
-    } finally {
-      connection.release();
-    }
+    console.warn('⚠️ Transactions need to be implemented using Supabase RPC functions or client methods.');
+    throw new Error('Transactions need to be implemented using Supabase RPC functions or client methods.');
   },
+  
+  // Legacy pool export for backward compatibility (will be deprecated)
+  pool: {
+    execute: async (sql, params) => {
+      console.warn('⚠️ Direct SQL queries are not supported with Supabase. Use supabase client methods instead.');
+      throw new Error('Direct SQL queries are not supported with Supabase. Use supabase client methods instead.');
+    }
+  }
 };
