@@ -147,6 +147,14 @@ class Document {
   }
 
   /**
+   * Get stage by ID
+   */
+  static async getStageById(stageId) {
+    const results = await db.query('SELECT * FROM deliverable_stages WHERE id = ?', [stageId]);
+    return results[0] || null;
+  }
+
+  /**
    * Generate stored filename
    */
   static generateStoredName(originalName) {

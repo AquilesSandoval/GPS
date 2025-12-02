@@ -144,9 +144,22 @@ class EmailService {
 
   /**
    * Strip HTML tags for plain text version
+   * Uses iterative approach to prevent injection via nested tags
    */
   stripHtml(html) {
-    return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    if (!html) return '';
+    
+    let result = html;
+    let previousResult;
+    
+    // Iterate until no more tags can be removed
+    do {
+      previousResult = result;
+      result = result.replace(/<[^>]*>/g, '');
+    } while (result !== previousResult);
+    
+    // Clean up whitespace
+    return result.replace(/\s+/g, ' ').trim();
   }
 
   /**

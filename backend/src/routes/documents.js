@@ -2,6 +2,7 @@ const express = require('express');
 const { param } = require('express-validator');
 const { validate } = require('../middleware/validate');
 const { authenticate } = require('../middleware/auth');
+const { uploadLimiter } = require('../middleware/rateLimiter');
 const documentController = require('../controllers/documentController');
 
 const router = express.Router();
@@ -21,6 +22,7 @@ router.get('/stages', documentController.getStages);
 router.post(
   '/upload',
   authenticate,
+  uploadLimiter,
   documentController.uploadDocument,
 );
 

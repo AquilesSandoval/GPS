@@ -8,10 +8,14 @@ const fs = require('fs');
 const config = require('./config');
 const routes = require('./routes');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
+const { apiLimiter } = require('./middleware/rateLimiter');
 const { testConnection } = require('./config/database');
 const emailService = require('./services/emailService');
 
 const app = express();
+
+// Trust proxy (required for rate limiting behind reverse proxies)
+app.set('trust proxy', 1);
 
 // CORS configuration
 app.use(cors({
@@ -22,6 +26,9 @@ app.use(cors({
 // Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Apply rate limiting to all API routes
+app.use('/api', apiLimiter);
 
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.resolve(config.upload.path);

@@ -97,9 +97,8 @@ const uploadDocument = async (req, res, next) => {
         mimeType: req.file.mimetype,
       });
 
-      // Notify reviewers
-      const stages = await Document.getStages();
-      const stage = stages.find(s => s.id === parseInt(stageId, 10));
+      // Notify reviewers - get stage name efficiently
+      const stage = await Document.getStageById(parseInt(stageId, 10));
       
       await NotificationService.notifyProjectReviewers(project.id, 'DOCUMENT_UPLOADED', {
         documentName: req.file.originalname,

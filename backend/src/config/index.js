@@ -1,5 +1,26 @@
 require('dotenv').config();
 
+// Validate required environment variables in production
+const validateRequiredEnvVars = () => {
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  if (isProduction) {
+    const required = ['DB_PASSWORD', 'JWT_SECRET'];
+    const missing = required.filter(key => !process.env[key]);
+    
+    if (missing.length > 0) {
+      throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
+    }
+    
+    // Validate JWT_SECRET is not the default
+    if (process.env.JWT_SECRET === 'default-secret-change-in-production') {
+      throw new Error('JWT_SECRET must be changed from default value in production');
+    }
+  }
+};
+
+validateRequiredEnvVars();
+
 module.exports = {
   port: process.env.PORT || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -9,14 +30,14 @@ module.exports = {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT, 10) || 3306,
     user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
+    password: process.env.DB_PASSWORD,
     name: process.env.DB_NAME || 'sgpti_db',
     connectionLimit: 10,
   },
   
   // JWT configuration
   jwt: {
-    secret: process.env.JWT_SECRET || 'default-secret-change-in-production',
+    secret: process.env.JWT_SECRET || (process.env.NODE_ENV === 'development' ? 'dev-secret-not-for-production' : undefined),
     expiresIn: process.env.JWT_EXPIRES_IN || '24h',
   },
   
