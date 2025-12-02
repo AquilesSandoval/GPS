@@ -20,61 +20,57 @@ Sistema web para la gestión integral de proyectos académicos de titulación e 
 ### Prerrequisitos
 
 - Node.js v18 o superior
-- MySQL 8.0 o superior
+- Cuenta en [Supabase](https://supabase.com) (gratis)
 - npm o yarn
 
-### Pasos de instalación
+### Guías de Configuración
 
-1. **Clonar el repositorio**
-   ```bash
-   git clone <url-del-repositorio>
-   cd GPS/backend
-   ```
+- 🚀 **[QUICK_START.md](../QUICK_START.md)** - Configuración rápida en 10 minutos
+- 📖 **[SETUP_INSTRUCTIONS.md](SETUP_INSTRUCTIONS.md)** - Guía detallada paso a paso
+- 📊 **[SOLUTION_SUMMARY.md](../SOLUTION_SUMMARY.md)** - Resumen completo de cambios
 
-2. **Instalar dependencias**
+### Pasos Rápidos
+
+1. **Instalar dependencias**
    ```bash
+   cd backend
    npm install
    ```
 
-3. **Configurar variables de entorno**
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Edita el archivo `.env` con tus credenciales:
-   ```env
-   # Base de datos
-   DB_HOST=localhost
-   DB_PORT=3306
-   DB_USER=tu_usuario
-   DB_PASSWORD=tu_contraseña
-   DB_NAME=sgpti_db
-   
-   # JWT
-   JWT_SECRET=tu_clave_secreta_muy_segura
-   
-   # Email (opcional pero recomendado)
-   SMTP_HOST=smtp.gmail.com
-   SMTP_PORT=587
-   SMTP_USER=tu_correo@gmail.com
-   SMTP_PASSWORD=tu_contraseña_de_aplicacion
-   ```
+2. **Configurar Supabase**
+   - Crea un proyecto en [supabase.com](https://supabase.com)
+   - Copia las credenciales (URL y Anon Key)
+   - Edita `backend/.env`:
+     ```env
+     SUPABASE_URL=https://tu-proyecto.supabase.co
+     SUPABASE_ANON_KEY=tu-clave-anonima
+     JWT_SECRET=tu_clave_secreta_muy_segura
+     ```
 
-4. **Ejecutar migraciones**
+3. **Ejecutar migraciones en Supabase**
+   - Ve a SQL Editor en Supabase
+   - Ejecuta `migrations/supabase/001_create_migrations_table.sql`
+   - Ejecuta `migrations/supabase/002_create_users_table.sql`
+
+4. **Verificar configuración**
    ```bash
-   npm run migrate
+   npm run setup:supabase
    ```
 
 5. **Iniciar el servidor**
    ```bash
-   # Desarrollo
-   npm run dev
-   
-   # Producción
-   npm start
+   npm start    # Producción
+   npm run dev  # Desarrollo con hot-reload
    ```
 
 El servidor estará disponible en `http://localhost:3000`
+
+### Notas Importantes
+
+- ✅ El sistema usa **Supabase (PostgreSQL)** como base de datos
+- ✅ Las migraciones MySQL legacy están en `migrations/*.sql` (deprecadas)
+- ✅ Las migraciones actuales están en `migrations/supabase/*.sql`
+- ✅ El modelo User ahora usa el cliente Supabase directamente
 
 ## 📚 API Endpoints
 
@@ -220,10 +216,16 @@ npm run dev
 # Iniciar en producción
 npm start
 
-# Ejecutar migraciones
+# Verificar configuración de Supabase
+npm run setup:supabase
+
+# Ver migraciones de Supabase
+npm run migrate:supabase
+
+# Ejecutar migraciones MySQL (deprecado)
 npm run migrate
 
-# Revertir última migración
+# Revertir última migración MySQL (deprecado)
 npm run migrate:rollback
 
 # Ejecutar tests
