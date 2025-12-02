@@ -2,6 +2,11 @@ const { supabase } = require('../config/database');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
+// Constants
+const ERROR_NOT_FOUND = 'PGRST116'; // Supabase error code for "not found"
+const TABLE_USERS = 'users';
+const TABLE_ROLES = 'roles';
+
 class User {
   /**
    * Find user by ID
@@ -50,7 +55,7 @@ class User {
       .single();
     
     if (error) {
-      if (error.code === 'PGRST116') return null; // Not found
+      if (error.code === ERROR_NOT_FOUND) return null;
       throw error;
     }
     
@@ -68,10 +73,10 @@ class User {
    */
   static async findByEmail(email) {
     const { data, error } = await supabase
-      .from('users')
+      .from(TABLE_USERS)
       .select(`
         *,
-        roles (
+        ${TABLE_ROLES} (
           name,
           description
         )
@@ -80,7 +85,7 @@ class User {
       .single();
     
     if (error) {
-      if (error.code === 'PGRST116') return null; // Not found
+      if (error.code === ERROR_NOT_FOUND) return null;
       throw error;
     }
     
@@ -216,7 +221,7 @@ class User {
    */
   static async findAll(filters = {}) {
     let query = supabase
-      .from('users')
+      .from(TABLE_USERS)
       .select(`
         id,
         uuid,
@@ -226,7 +231,7 @@ class User {
         role_id,
         is_active,
         created_at,
-        roles (
+        ${TABLE_ROLES} (
           name
         )
       `);
@@ -240,21 +245,25 @@ class User {
     }
 
     if (filters.search) {
-      const searchTerm = `%${filters.search}%`;
-      query = query.or(`first_name.ilike.${searchTerm},last_name.ilike.${searchTerm},email.ilike.${searchTerm}`);
+      // Escape % and _ characters to prevent pattern injection
+      const escapedSearch = filters.search.replace(/[%_]/g, '\\$&');
+      const searchPattern = `%${escapedSearch}%`;
+      query = query.or(`first_name.ilike.${searchPattern},last_name.ilike.${searchPattern},email.ilike.${searchPattern}`);
     }
 
     query = query.order('created_at', { ascending: false });
 
+    const limit = filters.limit ? Math.min(Math.max(parseInt(filters.limit, 10), 1), 1000) : 10;
+    const offset = filters.offset ? Math.max(parseInt(filters.offset, 10), 0) : 0;
+
     if (filters.limit) {
-      query = query.limit(parseInt(filters.limit, 10));
+      query = query.limit(limit);
     }
 
     if (filters.offset) {
-      query = query.range(
-        parseInt(filters.offset, 10),
-        parseInt(filters.offset, 10) + (parseInt(filters.limit, 10) || 10) - 1
-      );
+      // Use safe bounds-checked values
+      const endRange = Math.min(offset + limit - 1, Number.MAX_SAFE_INTEGER);
+      query = query.range(offset, endRange);
     }
 
     const { data, error } = await query;
@@ -273,7 +282,7 @@ class User {
    */
   static async getRoles() {
     const { data, error } = await supabase
-      .from('roles')
+      .from(TABLE_ROLES)
       .select('*')
       .order('id');
     
@@ -286,13 +295,13 @@ class User {
    */
   static async getRoleByName(name) {
     const { data, error } = await supabase
-      .from('roles')
+      .from(TABLE_ROLES)
       .select('*')
       .eq('name', name)
       .single();
     
     if (error) {
-      if (error.code === 'PGRST116') return null; // Not found
+      if (error.code === ERROR_NOT_FOUND) return null;
       throw error;
     }
     
