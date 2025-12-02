@@ -4,14 +4,14 @@ const config = require('./index');
 // Create Supabase client
 const supabase = createClient(
   config.supabase.url,
-  config.supabase.anonKey
+  config.supabase.anonKey,
 );
 
 // Test database connection
 const testConnection = async () => {
   try {
     // Test connection by trying to query a simple table or using a health check
-    const { data, error } = await supabase.from('users').select('count', { count: 'exact', head: true });
+    const { error } = await supabase.from('users').select('count', { count: 'exact', head: true });
     
     if (error) {
       console.error('❌ Supabase connection failed:', error.message);
@@ -31,22 +31,22 @@ module.exports = {
   testConnection,
   
   // Helper method to execute queries (compatibility layer for legacy MySQL code)
-  query: async (sql, params) => {
+  query: async (_sql, _params) => {
     console.warn('⚠️ Direct SQL queries are not supported with Supabase. Use supabase client methods instead.');
     throw new Error('Direct SQL queries are not supported with Supabase. Use supabase client methods instead.');
   },
   
   // Helper method for transactions (compatibility layer for legacy MySQL code)
-  transaction: async (callback) => {
+  transaction: async (_callback) => {
     console.warn('⚠️ Transactions need to be implemented using Supabase RPC functions or client methods.');
     throw new Error('Transactions need to be implemented using Supabase RPC functions or client methods.');
   },
   
   // Legacy pool export for backward compatibility (will be deprecated)
   pool: {
-    execute: async (sql, params) => {
+    execute: async (_sql, _params) => {
       console.warn('⚠️ Direct SQL queries are not supported with Supabase. Use supabase client methods instead.');
       throw new Error('Direct SQL queries are not supported with Supabase. Use supabase client methods instead.');
-    }
-  }
+    },
+  },
 };
