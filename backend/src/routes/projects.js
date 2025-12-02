@@ -40,6 +40,18 @@ router.get(
 );
 
 /**
+ * @route GET /api/projects/export
+ * @desc Export projects to Excel
+ * @access Private (Comité, Biblioteca)
+ */
+router.get(
+  '/export',
+  authenticate,
+  authorize('comite', 'biblioteca'),
+  projectController.exportToExcel,
+);
+
+/**
  * @route POST /api/projects
  * @desc Create new project
  * @access Private (Estudiante)

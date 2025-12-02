@@ -5,11 +5,15 @@ import {
   MagnifyingGlassIcon,
   FunnelIcon,
   FolderIcon,
+  ArrowDownTrayIcon,
+  ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 
 const SearchPage = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState('');
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState({
     statusId: '',
@@ -57,6 +61,43 @@ const SearchPage = () => {
       console.error('Error searching:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleExport = async () => {
+    setExporting(true);
+    setExportError('');
+    try {
+      const params = {};
+      if (query) params.query = query;
+      if (filters.statusId) params.statusId = filters.statusId;
+      if (filters.typeId) params.typeId = filters.typeId;
+      if (filters.fromDate) params.fromDate = filters.fromDate;
+      if (filters.toDate) params.toDate = filters.toDate;
+
+      const response = await projectService.exportToExcel(params);
+      
+      // Create a blob from the response
+      const blob = new Blob([response.data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `proyectos_${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error exporting:', error);
+      setExportError('Error al exportar a Excel. Por favor intente nuevamente.');
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -219,9 +260,25 @@ const SearchPage = () => {
         </div>
       ) : (
         <div>
-          <p className="text-sm text-gray-500 mb-4">
-            {results.length} resultado{results.length !== 1 ? 's' : ''} encontrado{results.length !== 1 ? 's' : ''}
-          </p>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm text-gray-500">
+              {results.length} resultado{results.length !== 1 ? 's' : ''} encontrado{results.length !== 1 ? 's' : ''}
+            </p>
+            <button
+              onClick={handleExport}
+              disabled={exporting || results.length === 0}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ArrowDownTrayIcon className="h-5 w-5" />
+              {exporting ? 'Exportando...' : 'Exportar a Excel'}
+            </button>
+          </div>
+          {exportError && (
+            <div className="mb-4 bg-red-50 border border-red-200 rounded-md p-4 flex items-start gap-3">
+              <ExclamationCircleIcon className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-700">{exportError}</p>
+            </div>
+          )}
           <div className="grid gap-4">
             {results.map((project) => (
               <Link

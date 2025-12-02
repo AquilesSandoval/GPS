@@ -58,6 +58,7 @@ export const projectService = {
   getTypes: () => api.get('/projects/types'),
   getStatuses: () => api.get('/projects/statuses'),
   search: (params) => api.get('/projects/search', { params }),
+  exportToExcel: (params) => api.get('/projects/export', { params, responseType: 'blob' }),
 };
 
 // Document services
