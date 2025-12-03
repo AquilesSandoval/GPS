@@ -113,12 +113,12 @@ const RegisterPage = () => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Role Selection */}
+        {/* Role Selection with Checkboxes */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Tipo de cuenta
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             {roles.map((role) => (
               <label
                 key={role.id}
@@ -128,27 +128,33 @@ const RegisterPage = () => {
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
-                <input
-                  type="radio"
-                  name="roleId"
-                  value={role.id}
-                  checked={formData.roleId === role.id.toString()}
-                  onChange={handleChange}
-                  className="sr-only"
-                />
-                <div className="flex flex-col">
-                  <span className={`block text-sm font-medium capitalize ${
-                    formData.roleId === role.id.toString() ? 'text-indigo-900' : 'text-gray-900'
-                  }`}>
-                    {role.name}
-                  </span>
-                  <span className="mt-1 text-xs text-gray-500">
-                    {getRoleDescription(role.name)}
-                  </span>
+                <div className="flex items-start gap-3 w-full">
+                  <input
+                    type="checkbox"
+                    name="roleId"
+                    value={role.id}
+                    checked={formData.roleId === role.id.toString()}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setFormData({ ...formData, roleId: role.id.toString() });
+                      } else {
+                        setFormData({ ...formData, roleId: '' });
+                      }
+                      setError('');
+                    }}
+                    className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mt-0.5 flex-shrink-0"
+                  />
+                  <div className="flex flex-col min-w-0">
+                    <span className={`block text-sm font-medium capitalize ${
+                      formData.roleId === role.id.toString() ? 'text-indigo-900' : 'text-gray-900'
+                    }`}>
+                      {role.name}
+                    </span>
+                    <span className="mt-1 text-xs text-gray-500 leading-tight">
+                      {getRoleDescription(role.name)}
+                    </span>
+                  </div>
                 </div>
-                {formData.roleId === role.id.toString() && (
-                  <CheckCircleIcon className="h-5 w-5 text-indigo-600 absolute top-2 right-2" />
-                )}
               </label>
             ))}
           </div>
