@@ -64,6 +64,17 @@ router.get(
 );
 
 /**
+ * @route GET /api/projects/all
+ * @desc Get all projects (for dashboard)
+ * @access Private
+ */
+router.get(
+  '/all',
+  authenticate,
+  projectController.getAllProjects,
+);
+
+/**
  * @route GET /api/projects/search
  * @desc Search projects
  * @access Private (Comité, Biblioteca)

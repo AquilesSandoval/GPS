@@ -410,6 +410,26 @@ const removeAuthor = async (req, res, next) => {
 };
 
 /**
+ * Get all projects with limit for dashboard
+ */
+const getAllProjects = async (req, res, next) => {
+  try {
+    const { limit } = req.query;
+    const projects = await Project.findByUser(req.user.id, req.user.role_name);
+    
+    // Apply limit if provided
+    const limitedProjects = limit ? projects.slice(0, parseInt(limit, 10)) : projects;
+
+    res.json({
+      success: true,
+      data: limitedProjects,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Get assigned projects for reviewer (docente - RF05)
  */
 const getAssignedProjects = async (req, res, next) => {
@@ -598,6 +618,7 @@ module.exports = {
   removeReviewer,
   searchProjects,
   getMyProjects,
+  getAllProjects,
   getAssignedProjects,
   getPendingReviewProjects,
   getArchiveReadyProjects,

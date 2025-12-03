@@ -140,12 +140,35 @@ FRONTEND_URL=https://33b955e6-85bf-4077-8890-2a3b21af9632-00-31ol1kfqxl3q0.picar
 - Configured deployment for autoscale
 - Created comprehensive documentation
 
+### Role-Specific Dashboards Added
+- **Student Dashboard** (`/student/projects`): "Mis Proyectos" with list of student's projects and "Nueva Postulación" button
+- **Teacher Reviews** (`/teacher/reviews`): "Revisiones Pendientes" dashboard showing assigned projects with approve/reject actions
+- **Committee Assignments** (`/committee/assignments`): Panel for assigning reviewers to "postulado" projects
+- **Library Archive** (`/library/archive`): Search and validate approved projects for archiving
+
+### New API Endpoints
+- `GET /api/projects/all` - Get all projects based on user role (for dashboard)
+- `GET /api/projects/my` - Get user's own projects
+- `GET /api/projects/assigned` - Get projects assigned to teacher for review
+- `GET /api/projects/pending-review` - Get postulado projects for committee
+- `GET /api/projects/archive-ready` - Get approved projects for library
+
+### Bug Fixes
+- Fixed document upload: Frontend now correctly sends 'file' field instead of 'document' to match backend expectations
+- Fixed API endpoint for document upload: Now correctly calls `/documents/upload`
+
+### Navigation Updates
+- Dashboard quick actions now link to role-specific pages
+- Navbar updated with role-specific navigation items
+- Role selection on registration uses visible checkboxes with descriptions
+
 ## Next Steps
-1. Provide Supabase credentials in `backend/.env`
-2. Run database migrations following `backend/QUICK_START.md`
-3. Create test users using `npm run seed` in backend directory
-4. Test login/register functionality
-5. Deploy to production when ready
+1. Test all role-specific workflows:
+   - Student: Create project, upload documents, submit for review
+   - Teacher: View assigned projects, add comments, approve/reject
+   - Committee: View pending projects, assign reviewers
+   - Library: Search approved projects, validate documents, archive
+2. Deploy to production when ready
 
 ## Additional Documentation
 - `backend/QUICK_START.md` - Quick setup guide
