@@ -23,10 +23,16 @@ export const AuthProvider = ({ children }) => {
       if (token && savedUser) {
         try {
           setUser(JSON.parse(savedUser));
-          // Verify token is still valid
           const response = await authService.getProfile();
-          setUser(response.data.data);
-          localStorage.setItem('user', JSON.stringify(response.data.data));
+          const profileData = response.data.data;
+          const normalizedUser = {
+            ...profileData,
+            first_name: profileData.firstName || profileData.first_name,
+            last_name: profileData.lastName || profileData.last_name,
+            role_name: profileData.role || profileData.role_name,
+          };
+          setUser(normalizedUser);
+          localStorage.setItem('user', JSON.stringify(normalizedUser));
         } catch {
           logout();
         }
@@ -40,19 +46,31 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     const response = await authService.login(credentials);
     const { token, user: userData } = response.data.data;
+    const normalizedUser = {
+      ...userData,
+      first_name: userData.firstName || userData.first_name,
+      last_name: userData.lastName || userData.last_name,
+      role_name: userData.role || userData.role_name,
+    };
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
-    return userData;
+    localStorage.setItem('user', JSON.stringify(normalizedUser));
+    setUser(normalizedUser);
+    return normalizedUser;
   };
 
   const register = async (userData) => {
     const response = await authService.register(userData);
     const { token, user: newUser } = response.data.data;
+    const normalizedUser = {
+      ...newUser,
+      first_name: newUser.firstName || newUser.first_name,
+      last_name: newUser.lastName || newUser.last_name,
+      role_name: newUser.role || newUser.role_name,
+    };
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(newUser));
-    setUser(newUser);
-    return newUser;
+    localStorage.setItem('user', JSON.stringify(normalizedUser));
+    setUser(normalizedUser);
+    return normalizedUser;
   };
 
   const logout = () => {

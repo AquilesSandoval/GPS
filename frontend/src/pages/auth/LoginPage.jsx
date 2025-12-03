@@ -28,8 +28,14 @@ const LoginPage = () => {
     setError("");
 
     try {
-      await login(formData);
-      navigate("/student");
+      const userData = await login(formData);
+      const roleRedirects = {
+        estudiante: '/student/projects',
+        docente: '/teacher/reviews',
+        comite: '/committee/assignments',
+        biblioteca: '/library/archive',
+      };
+      navigate(roleRedirects[userData.role_name] || '/dashboard');
     } catch (err) {
       setError(
         err.response?.data?.error ||
@@ -145,7 +151,7 @@ const LoginPage = () => {
 
         <div className="mt-6">
           <Link
-            to="/student/projects"
+            to="/register"
             className="w-full flex justify-center py-2 px-4 border border-indigo-600 rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50 transition-colors"
           >
             Crear cuenta
