@@ -92,23 +92,25 @@ const DashboardPage = () => {
     if (isStudent) {
       return [
         { name: 'Nuevo Proyecto', href: '/projects/new', icon: PlusIcon, description: 'Crear una nueva propuesta de proyecto' },
-        { name: 'Mis Proyectos', href: '/projects', icon: FolderIcon, description: 'Ver todos tus proyectos' },
+        { name: 'Mis Proyectos', href: '/student/projects', icon: FolderIcon, description: 'Ver todos tus proyectos' },
       ];
     }
     if (isTeacher) {
       return [
-        { name: 'Proyectos Asignados', href: '/projects', icon: FolderIcon, description: 'Ver proyectos para revisar' },
+        { name: 'Revisiones Pendientes', href: '/teacher/reviews', icon: FolderIcon, description: 'Ver proyectos asignados para revisar' },
+        { name: 'Todos los Proyectos', href: '/projects', icon: DocumentTextIcon, description: 'Ver todos los proyectos' },
       ];
     }
     if (isCommittee) {
       return [
-        { name: 'Todos los Proyectos', href: '/projects', icon: FolderIcon, description: 'Gestionar proyectos del sistema' },
+        { name: 'Asignar Revisores', href: '/committee/assignments', icon: FolderIcon, description: 'Asignar revisores a proyectos postulados' },
+        { name: 'Todos los Proyectos', href: '/projects', icon: DocumentTextIcon, description: 'Gestionar todos los proyectos' },
         { name: 'Búsqueda Avanzada', href: '/search', icon: DocumentTextIcon, description: 'Buscar proyectos y documentos' },
       ];
     }
     if (isLibrary) {
       return [
-        { name: 'Proyectos Aprobados', href: '/projects', icon: FolderIcon, description: 'Ver proyectos para archivar' },
+        { name: 'Archivar Proyectos', href: '/library/archive', icon: FolderIcon, description: 'Validar y archivar proyectos aprobados' },
         { name: 'Búsqueda', href: '/search', icon: DocumentTextIcon, description: 'Buscar en el archivo' },
       ];
     }

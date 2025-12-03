@@ -22,11 +22,12 @@ const Navbar = () => {
 
   const navigation = [
     { name: 'Inicio', href: '/dashboard', icon: HomeIcon, roles: ['estudiante', 'docente', 'comite', 'biblioteca'] },
-    { name: 'Mis Proyectos', href: '/projects', icon: FolderIcon, roles: ['estudiante'] },
-    { name: 'Proyectos Asignados', href: '/projects', icon: FolderIcon, roles: ['docente'] },
+    { name: 'Mis Proyectos', href: '/student/projects', icon: FolderIcon, roles: ['estudiante'] },
+    { name: 'Revisiones Pendientes', href: '/teacher/reviews', icon: FolderIcon, roles: ['docente'] },
+    { name: 'Asignar Revisores', href: '/committee/assignments', icon: UsersIcon, roles: ['comite'] },
+    { name: 'Archivar', href: '/library/archive', icon: FolderIcon, roles: ['biblioteca'] },
     { name: 'Todos los Proyectos', href: '/projects', icon: FolderIcon, roles: ['comite', 'biblioteca'] },
     { name: 'Búsqueda', href: '/search', icon: MagnifyingGlassIcon, roles: ['comite', 'biblioteca'] },
-    { name: 'Usuarios', href: '/admin/users', icon: UsersIcon, roles: ['comite'] },
     { name: 'Notificaciones', href: '/notifications', icon: BellIcon, roles: ['estudiante', 'docente', 'comite', 'biblioteca'] },
   ];
 

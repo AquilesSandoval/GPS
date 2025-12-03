@@ -18,6 +18,12 @@ import ProjectDetailPage from './pages/projects/ProjectDetailPage';
 import NewProjectPage from './pages/projects/NewProjectPage';
 import EditProjectPage from './pages/projects/EditProjectPage';
 
+// Role-specific Pages
+import StudentProjectsPage from './pages/student/StudentProjectsPage';
+import TeacherReviewsPage from './pages/teacher/TeacherReviewsPage';
+import CommitteeAssignmentsPage from './pages/committee/CommitteeAssignmentsPage';
+import LibraryArchivePage from './pages/library/LibraryArchivePage';
+
 // Other Pages
 import NotificationsPage from './pages/notifications/NotificationsPage';
 import SearchPage from './pages/search/SearchPage';
@@ -44,6 +50,12 @@ function App() {
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            
+            {/* Role-specific Routes */}
+            <Route path="/student/projects" element={<StudentProjectsPage />} />
+            <Route path="/teacher/reviews" element={<TeacherReviewsPage />} />
+            <Route path="/committee/assignments" element={<CommitteeAssignmentsPage />} />
+            <Route path="/library/archive" element={<LibraryArchivePage />} />
           </Route>
 
           {/* Redirects */}
