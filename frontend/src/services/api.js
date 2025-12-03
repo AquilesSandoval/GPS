@@ -66,9 +66,10 @@ export const documentService = {
   getByProject: (projectUuid) => api.get(`/documents/project/${projectUuid}`),
   upload: (projectUuid, stageId, file) => {
     const formData = new FormData();
-    formData.append('document', file);
+    formData.append('file', file);
+    formData.append('projectUuid', projectUuid);
     formData.append('stageId', stageId);
-    return api.post(`/documents/project/${projectUuid}`, formData, {
+    return api.post('/documents/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
