@@ -28,6 +28,42 @@ router.get('/statuses', projectController.getProjectStatuses);
 router.get('/my', authenticate, projectController.getMyProjects);
 
 /**
+ * @route GET /api/projects/assigned
+ * @desc Get projects assigned to reviewer (docente)
+ * @access Private (Docente)
+ */
+router.get(
+  '/assigned',
+  authenticate,
+  authorize('docente'),
+  projectController.getAssignedProjects,
+);
+
+/**
+ * @route GET /api/projects/pending-review
+ * @desc Get projects pending review (postulados)
+ * @access Private (Comité)
+ */
+router.get(
+  '/pending-review',
+  authenticate,
+  authorize('comite'),
+  projectController.getPendingReviewProjects,
+);
+
+/**
+ * @route GET /api/projects/archive-ready
+ * @desc Get projects ready for archive (aprobados)
+ * @access Private (Biblioteca)
+ */
+router.get(
+  '/archive-ready',
+  authenticate,
+  authorize('biblioteca'),
+  projectController.getArchiveReadyProjects,
+);
+
+/**
  * @route GET /api/projects/search
  * @desc Search projects
  * @access Private (Comité, Biblioteca)

@@ -59,6 +59,10 @@ export const projectService = {
   getStatuses: () => api.get('/projects/statuses'),
   search: (params) => api.get('/projects/search', { params }),
   exportToExcel: (params) => api.get('/projects/export', { params, responseType: 'blob' }),
+  getMyProjects: () => api.get('/projects/my'),
+  getAssignedProjects: () => api.get('/projects/assigned'),
+  getPendingReviewProjects: () => api.get('/projects/pending-review'),
+  getArchiveReadyProjects: () => api.get('/projects/archive-ready'),
 };
 
 // Document services

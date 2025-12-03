@@ -410,6 +410,54 @@ const removeAuthor = async (req, res, next) => {
 };
 
 /**
+ * Get assigned projects for reviewer (docente - RF05)
+ */
+const getAssignedProjects = async (req, res, next) => {
+  try {
+    const projects = await Project.findAssignedToReviewer(req.user.id);
+
+    res.json({
+      success: true,
+      data: projects,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get projects pending review (comité - RF03)
+ */
+const getPendingReviewProjects = async (req, res, next) => {
+  try {
+    const projects = await Project.findPendingReview();
+
+    res.json({
+      success: true,
+      data: projects,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get projects ready for archive (biblioteca - RF08)
+ */
+const getArchiveReadyProjects = async (req, res, next) => {
+  try {
+    const projects = await Project.findArchiveReady();
+
+    res.json({
+      success: true,
+      data: projects,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Helper function to check project access
  */
 const checkProjectAccess = async (user, project) => {
@@ -550,6 +598,9 @@ module.exports = {
   removeReviewer,
   searchProjects,
   getMyProjects,
+  getAssignedProjects,
+  getPendingReviewProjects,
+  getArchiveReadyProjects,
   getProjectTypes,
   getProjectStatuses,
   addAuthor,

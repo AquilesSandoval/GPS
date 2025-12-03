@@ -363,6 +363,115 @@ class Project {
       return this.search({});
     }
   }
+
+  /**
+   * Get projects assigned to a reviewer (for docentes - RF05)
+   */
+  static async findAssignedToReviewer(reviewerId) {
+    const sql = `
+      SELECT DISTINCT p.id, p.uuid, p.title, p.abstract, p.keywords,
+             pt.name as type_name, ps.name as status_name, ps.color as status_color,
+             p.submitted_at, p.approved_at, p.created_at,
+             pr.role_type as reviewer_role, pr.assigned_at as reviewer_assigned_at
+      FROM projects p
+      JOIN project_types pt ON p.type_id = pt.id
+      JOIN project_statuses ps ON p.status_id = ps.id
+      JOIN project_reviewers pr ON p.id = pr.project_id
+      WHERE pr.reviewer_id = ? AND pr.is_active = TRUE
+        AND ps.name IN ('en_revision', 'postulado', 'requiere_cambios')
+      ORDER BY p.submitted_at DESC
+    `;
+    const projects = await db.query(sql, [reviewerId]);
+    
+    for (const project of projects) {
+      project.authors = await this.getAuthors(project.id);
+      project.latest_document = await this.getLatestDocument(project.id);
+    }
+    
+    return projects;
+  }
+
+  /**
+   * Get projects pending review (for comité - RF03)
+   */
+  static async findPendingReview() {
+    const sql = `
+      SELECT DISTINCT p.id, p.uuid, p.title, p.abstract, p.keywords,
+             pt.name as type_name, ps.name as status_name, ps.color as status_color,
+             p.submitted_at, p.approved_at, p.created_at
+      FROM projects p
+      JOIN project_types pt ON p.type_id = pt.id
+      JOIN project_statuses ps ON p.status_id = ps.id
+      WHERE ps.name = 'postulado'
+      ORDER BY p.submitted_at ASC
+    `;
+    const projects = await db.query(sql);
+    
+    for (const project of projects) {
+      project.authors = await this.getAuthors(project.id);
+      project.reviewers = await this.getReviewers(project.id);
+    }
+    
+    return projects;
+  }
+
+  /**
+   * Get projects ready for archive (for biblioteca - RF08)
+   */
+  static async findArchiveReady() {
+    const sql = `
+      SELECT DISTINCT p.id, p.uuid, p.title, p.abstract, p.keywords,
+             pt.name as type_name, ps.name as status_name, ps.color as status_color,
+             p.submitted_at, p.approved_at, p.created_at
+      FROM projects p
+      JOIN project_types pt ON p.type_id = pt.id
+      JOIN project_statuses ps ON p.status_id = ps.id
+      WHERE ps.name = 'aprobado'
+      ORDER BY p.approved_at DESC
+    `;
+    const projects = await db.query(sql);
+    
+    for (const project of projects) {
+      project.authors = await this.getAuthors(project.id);
+      project.final_documents = await this.getFinalDocuments(project.id);
+    }
+    
+    return projects;
+  }
+
+  /**
+   * Get latest document for a project
+   */
+  static async getLatestDocument(projectId) {
+    const sql = `
+      SELECT d.id, d.uuid, d.original_name, d.file_size, d.mime_type, d.version,
+             ds.name as stage_name, d.uploaded_at
+      FROM documents d
+      JOIN deliverable_stages ds ON d.stage_id = ds.id
+      WHERE d.project_id = ?
+      ORDER BY d.uploaded_at DESC
+      LIMIT 1
+    `;
+    const results = await db.query(sql, [projectId]);
+    return results[0] || null;
+  }
+
+  /**
+   * Get final documents for a project (biblioteca validation)
+   */
+  static async getFinalDocuments(projectId) {
+    const sql = `
+      SELECT d.id, d.uuid, d.original_name, d.file_size, d.mime_type, d.version,
+             ds.name as stage_name, d.uploaded_at,
+             u.first_name as uploaded_by_first_name, u.last_name as uploaded_by_last_name
+      FROM documents d
+      JOIN deliverable_stages ds ON d.stage_id = ds.id
+      JOIN users u ON d.uploaded_by = u.id
+      WHERE d.project_id = ?
+      ORDER BY ds.sort_order ASC, d.version DESC
+    `;
+    return db.query(sql, [projectId]);
+  }
 }
 
 module.exports = Project;
