@@ -1,33 +1,40 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import { EnvelopeIcon, LockClosedIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import {
+  EnvelopeIcon,
+  LockClosedIcon,
+  ExclamationCircleIcon,
+} from "@heroicons/react/24/outline";
 
 const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError('');
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       await login(formData);
-      navigate('/dashboard');
+      navigate("/student");
     } catch (err) {
-      setError(err.response?.data?.error || 'Error al iniciar sesión. Verifica tus credenciales.');
+      setError(
+        err.response?.data?.error ||
+          "Error al iniciar sesión. Verifica tus credenciales.",
+      );
     } finally {
       setLoading(false);
     }
@@ -48,7 +55,10 @@ const LoginPage = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
             Correo electrónico
           </label>
           <div className="mt-1 relative">
@@ -70,7 +80,10 @@ const LoginPage = () => {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
             Contraseña
           </label>
           <div className="mt-1 relative">
@@ -93,7 +106,10 @@ const LoginPage = () => {
 
         <div className="flex items-center justify-between">
           <div className="text-sm">
-            <Link to="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Link
+              to="/forgot-password"
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
               ¿Olvidaste tu contraseña?
             </Link>
           </div>
@@ -110,7 +126,7 @@ const LoginPage = () => {
               Iniciando sesión...
             </div>
           ) : (
-            'Iniciar Sesión'
+            "Iniciar Sesión"
           )}
         </button>
       </form>
@@ -121,13 +137,15 @@ const LoginPage = () => {
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">¿No tienes cuenta?</span>
+            <span className="px-2 bg-white text-gray-500">
+              ¿No tienes cuenta?
+            </span>
           </div>
         </div>
 
         <div className="mt-6">
           <Link
-            to="/register"
+            to="/student/projects"
             className="w-full flex justify-center py-2 px-4 border border-indigo-600 rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50 transition-colors"
           >
             Crear cuenta
