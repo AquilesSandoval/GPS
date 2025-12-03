@@ -17,9 +17,31 @@ const app = express();
 // Trust proxy (required for rate limiting behind reverse proxies)
 app.set('trust proxy', 1);
 
-// CORS configuration
+// CORS configuration - allow multiple origins for Replit environment
+const allowedOrigins = [
+  config.frontendUrl,
+  'http://localhost:5000',
+  'http://localhost:5173',
+  /\.replit\.dev$/
+];
+
 app.use(cors({
-  origin: config.frontendUrl,
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (allowed instanceof RegExp) {
+        return allowed.test(origin);
+      }
+      return allowed === origin;
+    });
+    
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 
