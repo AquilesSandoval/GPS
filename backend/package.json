@@ -10,7 +10,9 @@
     "migrate:rollback": "node migrations/rollback.js",
     "migrate:supabase": "node migrations/run-supabase.js",
     "setup:supabase": "node setup-supabase.js",
-    "seed": "node seeds/run.js",
+    "check": "node check-and-fix.js",
+    "seed": "node seeds/seed-test-data.js",
+    "list:users": "node seeds/list-users.js",
     "test": "jest --coverage",
     "lint": "eslint src/"
   },
